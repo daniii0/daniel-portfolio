@@ -1,3 +1,4 @@
+import emailjs from "@emailjs/browser";
 import malwaretoolkitImg from "./assets/malwaretoolkitImg.png";
 import passwordManagerImg from "./assets/passwordManagerImg.webp";
 import reactLogo from "./assets/react.png";
@@ -186,6 +187,52 @@ export default function App() {
   );
 
   const [mobileOpen, setMobileOpen] = useState(false);
+
+const [form, setForm] = useState({
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+});
+const [status, setStatus] = useState({ type: "", msg: "" });
+const [loading, setLoading] = useState(false);
+
+function onChange(e) {
+  setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+}
+
+async function onSubmit(e) {
+  e.preventDefault();
+  setStatus({ type: "", msg: "" });
+
+  if (!form.name || !form.email || !form.subject || !form.message) {
+    setStatus({ type: "error", msg: "Please fill out all fields." });
+    return;
+  }
+
+  setLoading(true);
+  try {
+    await emailjs.send(
+      import.meta.env.VITE_EMAILJS_SERVICE_ID,
+      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+      {
+        from_name: form.name,
+        from_email: form.email,
+        subject: form.subject,
+        message: form.message,
+      },
+      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+    );
+
+    setStatus({ type: "success", msg: "Message sent! ✅" });
+    setForm({ name: "", email: "", subject: "", message: "" });
+  } catch (err) {
+    console.error(err);
+    setStatus({ type: "error", msg: "Failed to send. Try again later." });
+  } finally {
+    setLoading(false);
+  }
+}
 
   // Optional: close mobile nav when scrolling / clicking a link
   function goTo(id) {
@@ -654,34 +701,69 @@ export default function App() {
             </GlassCard>
 
             <GlassCard className="p-6 sm:p-8">
-              <p className="text-lg font-bold">Message</p>
-              <p className="mt-2 text-sm text-slate-300/80">This can be connected to EmailJS later.</p>
+  <p className="text-lg font-bold">Message</p>
+  <p className="mt-2 text-sm text-slate-300/80">
+    Send me a message and I’ll get back to you.
+  </p>
 
-              <div className="mt-6 grid gap-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <input
-                    placeholder="Full Name"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
-                  />
-                  <input
-                    placeholder="Email Address"
-                    className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
-                  />
-                </div>
-                <input
-                  placeholder="Subject"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
-                />
-                <textarea
-                  placeholder="Message"
-                  rows={5}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
-                />
-                <button className="w-full rounded-2xl bg-gradient-to-r from-blue-900 via-blue-450 to-cyan-500 py-3 text-sm font-semibold text-white hover:opacity-95">
-                  Send Message
-                </button>
-              </div>
-            </GlassCard>
+  {/* Status message */}
+  {status.msg && (
+    <div
+      className={`mt-4 rounded-xl border px-4 py-3 text-sm ${
+        status.type === "success"
+          ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
+          : "border-red-400/30 bg-red-400/10 text-red-200"
+      }`}
+    >
+      {status.msg}
+    </div>
+  )}
+
+  <form onSubmit={onSubmit} className="mt-6 grid gap-4">
+    <div className="grid gap-4 sm:grid-cols-2">
+      <input
+        name="name"
+        value={form.name}
+        onChange={onChange}
+        placeholder="Full Name"
+        className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
+      />
+      <input
+        name="email"
+        value={form.email}
+        onChange={onChange}
+        placeholder="Email Address"
+        className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
+      />
+    </div>
+
+    <input
+      name="subject"
+      value={form.subject}
+      onChange={onChange}
+      placeholder="Subject"
+      className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
+    />
+
+    <textarea
+      name="message"
+      value={form.message}
+      onChange={onChange}
+      placeholder="Message"
+      rows={5}
+      className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
+    />
+
+    <button
+      type="submit"
+      disabled={loading}
+      className="w-full rounded-2xl bg-gradient-to-r from-blue-900 via-blue-450 to-cyan-500 py-3 text-sm font-semibold text-white hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed"
+    >
+      {loading ? "Sending..." : "Send Message"}
+    </button>
+  </form>
+</GlassCard>
+
           </div>
         </Container>
       </section>
