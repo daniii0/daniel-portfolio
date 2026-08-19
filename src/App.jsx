@@ -4,6 +4,7 @@ import { ArrowRight, Award, BarChart3, ChevronDown, Code2, Database, ExternalLin
 import stemkasaImg from "./assets/stemkasaImg.png";
 import malwaretoolkitImg from "./assets/malwaretoolkitImg.png";
 import passwordManagerImg from "./assets/passwordManagerImg.webp";
+import cyberRiskImg from "./assets/blog-nist-updates-hero.png";
 
 const data = {
   name: "Daniel Lavdari",
@@ -38,7 +39,7 @@ const data = {
   ],
   projects: [
     { title: "STEMKasaCoPilot", context: "Software Engineering Internship", desc: "Python backend services for an AI-powered Zoom meeting assistant, with REST APIs for meeting creation, enrollment, attendance tracking, and SQL-backed session data.", tags: ["Python", "Flask", "Zoom APIs", "REST APIs", "MySQL", "PostgreSQL"], image: stemkasaImg, href: "https://github.com/daniii0/daniel-portfolio" },
-    { title: "Cyber Risk Analysis", context: "Intro to Cyber Risk · Hunter College · Summer 2026", desc: "Analyzed cyber-attack chains and threat-intelligence scenarios involving critical infrastructure and organizational risk. Developed a NIST-aligned incident-response playbook, participated in a tabletop exercise, and researched AI use cases in cybersecurity.", tags: ["NIST", "Threat Intelligence", "Incident Response", "Cyber Risk", "AI Security"] },
+    { title: "Cyber Risk Analysis", context: "Intro to Cyber Risk · Hunter College · Summer 2026", desc: "Analyzed cyber-attack chains and threat-intelligence scenarios involving critical infrastructure and organizational risk. Developed a NIST-aligned incident-response playbook, participated in a tabletop exercise, and researched AI use cases in cybersecurity.", tags: ["NIST", "Threat Intelligence", "Incident Response", "Cyber Risk", "AI Security"], image: cyberRiskImg },
     { title: "Password Manager", desc: "Designed a password manager in Python with encrypted vault storage and credential-handling safeguards.", tags: ["Python", "Cryptography", "Authentication"], image: passwordManagerImg, href: "https://github.com/daniii0/Secure-Password-Manager" },
     { title: "Malware Analysis Toolkit", desc: "Python-based static malware analysis toolkit for hashing, entropy detection, and indicator extraction.", tags: ["Python", "File Hashing", "Entropy"], image: malwaretoolkitImg, href: "https://github.com/daniii0/malware-analysis-toolkit" },
     { title: "Quantitative Data Analysis", context: "Population Geography (GEOG 241) · Hunter College · Spring 2026", desc: "Used Microsoft Excel to compare and interpret demographic and geographic datasets, identify trends, organize structured analyses, and translate quantitative results into clear written findings.", tags: ["Excel", "Quantitative Analysis", "Data Interpretation"], compact: true },
