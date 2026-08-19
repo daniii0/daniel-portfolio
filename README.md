@@ -18,4 +18,8 @@ The EmailJS public key is a browser-side identifier, not a private secret. Confi
 
 ## Deployment
 
-`npm run deploy` builds the site and publishes `dist` to the `gh-pages` branch. Confirm **Enforce HTTPS** is enabled in GitHub Pages settings.
+Pushes to `main` run `.github/workflows/deploy-pages.yml`. The workflow installs locked dependencies, runs lint and the dependency audit, builds the Vite application, uploads `dist`, and deploys the artifact through GitHub Pages.
+
+The Vite base path is `/daniel-portfolio/`, matching this repository's GitHub Pages project-site URL. The legacy `gh-pages` branch is no longer used by the deployment workflow.
+
+In **Settings → Pages → Build and deployment**, set **Source** to **GitHub Actions**. Also confirm **Enforce HTTPS** is enabled.
