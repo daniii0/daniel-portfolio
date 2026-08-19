@@ -1,785 +1,98 @@
 import emailjs from "@emailjs/browser";
+import { useMemo, useState } from "react";
+import { ArrowRight, Award, BarChart3, ChevronDown, Code2, Database, ExternalLink, Github, Linkedin, Mail, MapPin, Menu, ShieldCheck, X } from "lucide-react";
+import stemkasaImg from "./assets/stemkasaImg.png";
 import malwaretoolkitImg from "./assets/malwaretoolkitImg.png";
 import passwordManagerImg from "./assets/passwordManagerImg.webp";
-import reactLogo from "./assets/react.png";
-import tailwindLogo from "./assets/tailwind.png";
-import htmlLogo from "./assets/html.png";
-import linuxLogo from "./assets/linux.png";
-import githubLogo from "./assets/github.png";
-import gitLogo from "./assets/git.png";
-import pandasLogo from "./assets/pandas.png";
-import pythonLogo from "./assets/python.png";
-import cppLogo from "./assets/cpp.png";
-import sqlLogo from "./assets/sql.png";
-import wiresharkLogo from "./assets/wireshark.png";
-import splunkLogo from "./assets/splunk.png";
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Github,
-  Linkedin,
-  ExternalLink,
-  Code2,
-  Cpu,
-  Zap,
-  ShieldCheck,
-  Award,
-  Menu,
-  X,
-  ArrowRight,
-  ChevronDown,
-} from "lucide-react";
 
 const data = {
   name: "Daniel Lavdari",
-  role: "Computer Science student • Software + Cybersecurity",
-  tagline:
-    "Computer Science student at Hunter College (CUNY). Passionate about AI, Cybersecurity, and Software Development. Exploring data-driven solutions and threat detection.",
+  role: "Computer Science Student · Cybersecurity & Technology Risk",
+  tagline: "Computer Science student at Hunter College combining software engineering experience with hands-on cybersecurity, technology-risk, and data-analysis work.",
   about: [
-    "I’m a Computer Science major with a Mathametics minor at Hunter College  focused on AI, cybersecurity, and software development. I like building practical projects and learning by doing.",
-    "I’ve worked with Python, C++, SQL, and security tooling like Splunk and Wireshark through projects and labs, and I’m always improving through hands-on work.",
+    "I'm a Computer Science student at Hunter College building experience across cybersecurity, technology risk, backend development, and data analysis. My software engineering internship gave me hands-on experience with Python, REST APIs, SQL databases, testing, and debugging, while my cybersecurity coursework and labs expanded my experience with threat intelligence, incident response, network analysis, and system hardening.",
+    "I'm especially interested in how technical systems, security threats, and business risk intersect. Through quantitative coursework and AI-system evaluation, I've also developed experience interpreting data, identifying failure modes, and communicating technical findings to technical and non-technical audiences.",
   ],
-  location: "New York, NY",
-  email: "daniel.lavdari@gmail.com",
-  phone: "(646) 299-9118",
+  email: "daniel.lavdari@gmail.com", location: "New York, NY",
   links: [
     { label: "GitHub", href: "https://github.com/daniii0", icon: <Github size={18} /> },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/daniel-lavdari-863ab426a/", icon: <Linkedin size={18} /> },
     { label: "Email", href: "mailto:daniel.lavdari@gmail.com", icon: <Mail size={18} /> },
   ],
-  skillBars: [
-    { label: "Python", value: 80 },
-    { label: "C++ OOP", value: 75 },
-    { label: "SQL & Database Systems", value: 65 },
-    { label: "Data Analysis", value: 70 },
-    { label: "Cybersecurity", value: 80 },
+  capabilities: [
+    ["Cyber Risk Analysis", "Threat analysis, incident response, and technology-risk thinking.", <ShieldCheck key="risk" size={16} />],
+    ["Backend Engineering", "Python, REST APIs, SQL, testing, and debugging.", <Database key="backend" size={16} />],
+    ["Security Analysis", "Network traffic analysis, system hardening, and security labs.", <Code2 key="security" size={16} />],
+    ["Data Interpretation", "Quantitative analysis and clear communication of findings.", <BarChart3 key="data" size={16} />],
   ],
-  tools: [
-  { name: "React", img: reactLogo },
-  { name: "Tailwind", img: tailwindLogo },
-  { name: "HTML", img: htmlLogo },
-  { name: "Linux", img: linuxLogo },
-  { name: "GitHub", img: githubLogo },
-  { name: "Git", img: gitLogo },
-  { name: "Pandas", img: pandasLogo },
-  { name: "Python", img: pythonLogo },
-  { name: "C++", img: cppLogo },
-  { name: "SQL", img: sqlLogo },
-  { name: "Wireshark", img: wiresharkLogo },
-  { name: "Splunk", img: splunkLogo },
-],
+  experience: [
+    { title: "Web Development Engineer Intern", company: "IT Services LLC / STEM Kasa", period: "March – May 2026", type: "Remote · Internship", bullets: ["Built Python backend services for an AI-powered Zoom meeting assistant, improving lesson-workflow automation by 40%.", "Developed REST APIs using Zoom APIs for meeting creation, enrollment, and attendance tracking, with MySQL and PostgreSQL for session data.", "Tested, debugged, and validated workflows with real meeting recordings to improve reliability.", "Used Git and Agile practices while collaborating in a two-person team."], tags: ["Python", "REST APIs", "Flask", "MySQL", "PostgreSQL", "Testing", "Git"] },
+    { title: "GenAI Externship Participant", company: "NYC Jobs Council", period: "January 2026", type: "On-site · Externship", bullets: ["Evaluated AI chatbot performance across resume and interview workflows for accuracy, clarity, and consistency.", "Designed QA test cases and identified edge cases and failure modes in AI-generated output.", "Communicated data-driven findings and usability feedback to stakeholders."], tags: ["AI-System Evaluation", "QA Testing", "Failure-Mode Analysis", "Communication"] },
+    { title: "IT Office Volunteer", company: "European University of Tirana", period: "June – August 2023", type: "On-site · Volunteer", bullets: ["Provided technical support for 10+ classrooms, troubleshooting hardware, software, and networking issues.", "Configured computer systems and networking equipment and maintained IT inventory records."], tags: ["IT Support", "Networking", "Troubleshooting"] },
+  ],
+  skills: [
+    ["Risk & Cybersecurity", ["NIST Incident Response", "Threat Intelligence", "Cyber-Attack Chain Analysis", "Network Traffic Analysis", "System Hardening"]],
+    ["Data & Analytics", ["Microsoft Excel", "SQL", "MySQL", "PostgreSQL", "Quantitative Analysis", "Trend Identification", "Data Interpretation"]],
+    ["Security & Development Tools", ["Splunk", "Wireshark", "Git", "Flask", "Ngrok", "VS Code"]],
+    ["Programming & Systems", ["Python", "JavaScript", "C++", "REST APIs", "Backend Development", "Testing", "Debugging", "Agile Development"]],
+  ],
   projects: [
-    {
-      title: "Password Manager",
-      desc: "Designed a secure password manager in Python with encrypted vault storage and threat-aware credential handling.",
-      tags: ["Python", "Cryptography", "Authentication"],
-      image: passwordManagerImg,
-      href: "https://github.com/daniii0/Secure-Password-Manager",
-    },
-    {
-      title: "Malware Analysis Toolkit",
-      desc: "Python-based static malware analysis toolkit for hashing, entropy detection, and IOC extraction.",
-      tags: ["Python", "File Hashing", "Entropy"],
-      image: malwaretoolkitImg,
-      href: "https://github.com/daniii0/malware-analysis-toolkit",
-    },
+    { title: "STEMKasaCoPilot", context: "Software Engineering Internship", desc: "Python backend services for an AI-powered Zoom meeting assistant, with REST APIs for meeting creation, enrollment, attendance tracking, and SQL-backed session data.", tags: ["Python", "Flask", "Zoom APIs", "REST APIs", "MySQL", "PostgreSQL"], image: stemkasaImg, href: "https://github.com/daniii0/daniel-portfolio" },
+    { title: "Cyber Risk Analysis", context: "Intro to Cyber Risk · Hunter College · Summer 2026", desc: "Analyzed cyber-attack chains and threat-intelligence scenarios involving critical infrastructure and organizational risk. Developed a NIST-aligned incident-response playbook, participated in a tabletop exercise, and researched AI use cases in cybersecurity.", tags: ["NIST", "Threat Intelligence", "Incident Response", "Cyber Risk", "AI Security"] },
+    { title: "Password Manager", desc: "Designed a password manager in Python with encrypted vault storage and credential-handling safeguards.", tags: ["Python", "Cryptography", "Authentication"], image: passwordManagerImg, href: "https://github.com/daniii0/Secure-Password-Manager" },
+    { title: "Malware Analysis Toolkit", desc: "Python-based static malware analysis toolkit for hashing, entropy detection, and indicator extraction.", tags: ["Python", "File Hashing", "Entropy"], image: malwaretoolkitImg, href: "https://github.com/daniii0/malware-analysis-toolkit" },
+    { title: "Quantitative Data Analysis", context: "Population Geography (GEOG 241) · Hunter College · Spring 2026", desc: "Used Microsoft Excel to compare and interpret demographic and geographic datasets, identify trends, organize structured analyses, and translate quantitative results into clear written findings.", tags: ["Excel", "Quantitative Analysis", "Data Interpretation"], compact: true },
   ],
-  certs: [
-    {
-      title: "Intermediate Cybersecurity",
-      org: "CodePath",
-      status: "Completed",
-      date: "August 2025",
-      accent: "from-orange-500/20 to-orange-500/5",
-      icon: <ShieldCheck className="text-orange-400" size={18} />,
-      url: "https://github.com/daniii0/Certifications/blob/main/Intermediate%20Cybersecurity.pdf",
-      areas: [
-        "Analyzed PCAP and tcpdump files using Wireshark for forensics",
-        "Simulated DDoS attacks and mitigation strategies",
-        "Built SIEM dashboards using Splunk for threat monitoring",
-        "Applied NIST Incident Response Framework",
-      ],
-    },
-    {
-      title: "Intro to Cybersecurity",
-      org: "CodePath",
-      status: "Completed",
-      date: "April 2025",
-      accent: "from-emerald-500/20 to-emerald-500/5",
-      icon: <ShieldCheck className="text-emerald-400" size={18} />,
-      url: "https://github.com/daniii0/Certifications/blob/main/Intro%20to%20Cybersecurity.pdf",
-      areas: [
-        "Linux system administration and security",
-        "Network protocol analysis with Wireshark",
-        "Malware detection and steganography analysis",
-        "Penetration testing with Metasploit",
-      ],
-    },
+  training: [
+    { title: "Intermediate Cybersecurity", org: "CodePath", status: "Completed", date: "August 2025", icon: <ShieldCheck key="i" size={18} />, url: "https://github.com/daniii0/Certifications/blob/main/Intermediate%20Cybersecurity.pdf", areas: ["Wireshark network traffic analysis", "Splunk security analysis", "Simulated incident-response work", "NIST incident-response practices"] },
+    { title: "Intro to Cybersecurity", org: "CodePath", status: "Completed", date: "April 2025", icon: <ShieldCheck key="b" size={18} />, url: "https://github.com/daniii0/Certifications/blob/main/Intro%20to%20Cybersecurity.pdf", areas: ["Linux system hardening", "Network protocol analysis with Wireshark", "Malware-detection exercises", "Security lab practice"] },
+    { title: "Detect, Triage, and Respond Faster with Agentic Security Operations", org: "CrowdStrike", status: "Hands-on Workshop · 1 CPE", date: "2026", icon: <ShieldCheck key="c" size={18} />, areas: ["One-hour hands-on security operations workshop", "Exposure to Falcon Onum, Falcon Next-Gen SIEM, and Charlotte AI"] },
+    { title: "Infosec Age of AI Summit", org: "Antisyphon Training · Powered by BHIS", status: "Certificate of Completion · 6 Hours", date: "August 17, 2026", icon: <Award key="a" size={18} />, areas: ["Six-hour information security training summit focused on the age of AI"] },
   ],
 };
 
-// ---------- Small UI helpers ----------
-function cn(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+const cn = (...classes) => classes.filter(Boolean).join(" ");
+function Container({ children, className = "" }) { return <div className={cn("mx-auto min-w-0 w-full max-w-6xl px-5 sm:px-6", className)}>{children}</div>; }
+function Card({ children, className = "" }) { return <div className={cn("min-w-0 max-w-full rounded-2xl border border-white/10 bg-white/[0.06] shadow-[0_10px_30px_rgba(0,0,0,.25)] backdrop-blur-xl", className)}>{children}</div>; }
+function Pill({ children }) { return <span className="inline-flex rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-slate-200">{children}</span>; }
+function Heading({ title, children }) { return <div className="text-center"><h2 className="text-3xl font-extrabold sm:text-4xl">{title}</h2><p className="mx-auto mt-3 max-w-2xl text-slate-300/80">{children}</p></div>; }
 
-function Container({ children, className = "" }) {
-  return <div className={cn("mx-auto w-full max-w-6xl px-5 sm:px-6", className)}>{children}</div>;
-}
-
-function GlassCard({ children, className = "" }) {
-  return (
-    <div
-      className={cn(
-        "rounded-2xl border border-white/10 bg-white/[0.06] backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.25)]",
-        className
-      )}
-    >
-      {children}
-    </div>
-  );
-}
-
-function Pill({ children, className = "" }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-slate-200",
-        className
-      )}
-    >
-      {children}
-    </span>
-  );
-}
-
-function ProgressBar({ label, value }) {
-  return (
-    <div className="mb-5">
-      <div className="mb-2 flex items-center justify-between text-xs">
-        <span className="text-slate-200">{label}</span>
-        <span className="text-slate-400">{value}%</span>
-      </div>
-      <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-blue-900 via-blue-450 to-cyan-300"
-          style={{ width: `${value}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-// ---------- Main ----------
 export default function App() {
-  const sections = useMemo(
-    () => [
-      { id: "home", label: "Home" },
-      { id: "about", label: "About" },
-      { id: "skills", label: "Skills" },
-      { id: "projects", label: "Projects" },
-      { id: "certifications", label: "Certifications" },
-      { id: "contact", label: "Contact" },
-    ],
-    []
-  );
-
+  const sections = useMemo(() => [["home", "Home"], ["about", "About"], ["experience", "Experience"], ["skills", "Skills"], ["projects", "Projects"], ["certifications", "Training"], ["contact", "Contact"]], []);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-const [form, setForm] = useState({
-  name: "",
-  email: "",
-  subject: "",
-  message: "",
-});
-const [status, setStatus] = useState({ type: "", msg: "" });
-const [loading, setLoading] = useState(false);
-
-function onChange(e) {
-  setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-}
-
-async function onSubmit(e) {
-  e.preventDefault();
-  setStatus({ type: "", msg: "" });
-
-  if (!form.name || !form.email || !form.subject || !form.message) {
-    setStatus({ type: "error", msg: "Please fill out all fields." });
-    return;
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "", website: "" });
+  const [status, setStatus] = useState({ type: "", msg: "" });
+  const [loading, setLoading] = useState(false);
+  const goTo = (id) => { setMobileOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  const onChange = ({ target }) => setForm((current) => ({ ...current, [target.name]: target.value }));
+  async function onSubmit(event) {
+    event.preventDefault(); setStatus({ type: "", msg: "" });
+    const clean = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]));
+    if (clean.website) return;
+    if (!clean.name || !clean.email || !clean.subject || !clean.message) return setStatus({ type: "error", msg: "Please complete every field." });
+    if (clean.name.length > 100 || clean.email.length > 254 || clean.subject.length > 150 || clean.message.length > 3000) return setStatus({ type: "error", msg: "Please shorten your message and try again." });
+    const config = [import.meta.env.VITE_EMAILJS_SERVICE_ID, import.meta.env.VITE_EMAILJS_TEMPLATE_ID, import.meta.env.VITE_EMAILJS_PUBLIC_KEY];
+    if (config.some((value) => !value)) return setStatus({ type: "error", msg: `The form is unavailable. Please email ${data.email}.` });
+    setLoading(true);
+    try {
+      await emailjs.send(config[0], config[1], { from_name: clean.name, from_email: clean.email, subject: clean.subject, message: clean.message }, config[2]);
+      setStatus({ type: "success", msg: "Message sent successfully." }); setForm({ name: "", email: "", subject: "", message: "", website: "" });
+    } catch { setStatus({ type: "error", msg: `The message could not be sent. Please email ${data.email}.` }); }
+    finally { setLoading(false); }
   }
 
-  setLoading(true);
-  try {
-    await emailjs.send(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-      {
-        from_name: form.name,
-        from_email: form.email,
-        subject: form.subject,
-        message: form.message,
-      },
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-    );
-
-    setStatus({ type: "success", msg: "Message sent! ✅" });
-    setForm({ name: "", email: "", subject: "", message: "" });
-  } catch (err) {
-    console.error(err);
-    setStatus({ type: "error", msg: "Failed to send. Try again later." });
-  } finally {
-    setLoading(false);
-  }
-}
-
-  // Optional: close mobile nav when scrolling / clicking a link
-  function goTo(id) {
-    setMobileOpen(false);
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
-  // Nice: add smooth scroll globally
-  useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth";
-    return () => {
-      document.documentElement.style.scrollBehavior = "auto";
-    };
-  }, []);
-
-  return (
-    <div className="min-h-screen text-slate-100">
-      {/* Background (Hostinger-ish) */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-[#070A14]" />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-950 via-blue-750/20 to-blue-300/10" />
-        <div className="absolute -top-40 left-1/2 h-[520px] w-[980px] -translate-x-1/2 rounded-full bg-fuchsia-500/10 blur-[120px]" />
-        <div className="absolute top-[30%] -left-48 h-[520px] w-[520px] rounded-full bg-blue-500/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-[520px] w-[520px] rounded-full bg-cyan-500/10 blur-[120px]" />
-        <div className="absolute inset-0 opacity-[0.08] [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:26px_26px]" />
-      </div>
-
-      {/* Navbar */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#070A14]/70 backdrop-blur-xl">
-        <Container className="py-4">
-          <div className="flex items-center justify-between">
-            <button
-              onClick={() => goTo("home")}
-              className="text-left font-semibold tracking-tight"
-              aria-label="Go to Home"
-            >
-              <span className="text-xl text-slate-300">Portfolio</span>
-              <div className="text-base sm:text-lg font-bold bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-cyan-200 bg-clip-text text-transparent">
-                
-              </div>
-            </button>
-
-            {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-7 text-sm text-slate-300">
-              {sections.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => goTo(s.id)}
-                  className="hover:text-white transition-colors"
-                >
-                  {s.label}
-                </button>
-              ))}
-              <button
-                onClick={() => goTo("contact")}
-                className="ml-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15 border border-white/10"
-              >
-                Let’s Talk <ArrowRight className="inline ml-1" size={14} />
-              </button>
-            </nav>
-
-            {/* Mobile button */}
-            <button
-              className="md:hidden inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 p-2"
-              onClick={() => setMobileOpen((v) => !v)}
-              aria-label="Toggle menu"
-            >
-              {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-            </button>
-          </div>
-
-          {/* Mobile menu */}
-          {mobileOpen && (
-            <div className="mt-4 md:hidden">
-              <GlassCard className="p-3">
-                <div className="grid gap-1">
-                  {sections.map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={() => goTo(s.id)}
-                      className="flex items-center justify-between rounded-xl px-3 py-2 text-left text-sm text-slate-200 hover:bg-white/5"
-                    >
-                      {s.label} <ChevronDown size={14} className="-rotate-90 opacity-70" />
-                    </button>
-                  ))}
-                </div>
-              </GlassCard>
-            </div>
-          )}
-        </Container>
-      </header>
-
-      {/* HERO (full page) */}
-      <section id="home" className="min-h-[92vh] flex items-center">
-        <Container>
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
-            <div className="text-center lg:text-left">
-              <p className="text-sm font-semibold text-slate-300/90">Hi, I’m</p>
-              <h1 className="mt-3 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight">
-                <span className="bg-gradient-to-r from-blue-900 via-blue-450 to-cyan-500 bg-clip-text text-transparent">
-                  {data.name}
-                </span>
-              </h1>
-              <p className="mt-4 text-slate-200/90 font-medium">{data.role}</p>
-              <p className="mt-5 max-w-xl mx-auto lg:mx-0 text-slate-300 leading-relaxed">
-                {data.tagline}
-              </p>
-
-              <div className="mt-7 flex flex-wrap justify-center lg:justify-start gap-3">
-                <button
-                  onClick={() => goTo("projects")}
-                  className="rounded-full bg-gradient-to-r from-blue-900 via-blue-450 to-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/10 hover:opacity-95"
-                >
-                  Explore My Work <ArrowRight className="inline ml-1" size={16} />
-                </button>
-                <button
-                  onClick={() => goTo("contact")}
-                  className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10"
-                >
-                  Contact Me
-                </button>
-              </div>
-
-              <div className="mt-7 flex justify-center lg:justify-start gap-4 text-slate-300">
-                {data.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 p-2 hover:bg-white/10 transition"
-                    aria-label={link.label}
-                    title={link.label}
-                  >
-                    {link.icon}
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            {/* Hero card */}
-            <GlassCard className="p-6 sm:p-8">
-              <div className="flex items-center gap-3">
-                <div className="rounded-xl bg-gradient-to-r from-indigo-500/20 via-fuchsia-500/20 to-cyan-500/20 p-3 border border-white/10">
-                  <Code2 size={18} className="text-indigo-200" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">What I do</p>
-                  <p className="text-xs text-slate-300/80">Building projects + improving every week</p>
-                </div>
-              </div>
-
-              <div className="mt-6 grid gap-3">
-                {[
-                  { title: "Clean Code", desc: "Maintainable structure, readable naming, reusable components.", icon: <Code2 size={16} className="text-indigo-300" /> },
-                  { title: "Problem Solving", desc: "Break big tasks into steps. Test, iterate, ship.", icon: <Cpu size={16} className="text-fuchsia-300" /> },
-                  { title: "Performance", desc: "Think about efficiency and real-world constraints.", icon: <Zap size={16} className="text-cyan-200" /> },
-                ].map((item) => (
-                  <div key={item.title} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="rounded-xl bg-white/5 border border-white/10 p-2">{item.icon}</div>
-                      <div>
-                        <p className="text-sm font-bold">{item.title}</p>
-                        <p className="text-xs text-slate-300/80 mt-1">{item.desc}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 flex flex-wrap gap-2">
-                <Pill className="text-indigo-200 bg-indigo-500/10 border-indigo-500/20">CS Student</Pill>
-                <Pill className="text-emerald-200 bg-emerald-500/10 border-emerald-500/20">Software Dev</Pill>
-                <Pill className="text-orange-200 bg-orange-500/10 border-orange-500/20">Cybersecurity</Pill>
-              </div>
-            </GlassCard>
-          </div>
-        </Container>
-      </section>
-
-      {/* ABOUT */}
-      <section id="about" className="py-20">
-        <Container>
-          <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold">
-              About <span className="text-indigo-300">Me</span>
-            </h2>
-            <p className="mt-3 text-slate-300/80 max-w-2xl mx-auto">
-              A quick intro + what I’m focused on right now.
-            </p>
-          </div>
-
-          <div className="mt-10 grid gap-6 lg:grid-cols-2 lg:items-start">
-            <GlassCard className="p-6 sm:p-8">
-              <p className="text-slate-200 leading-relaxed">{data.about[0]}</p>
-              <p className="mt-4 text-slate-300/90 leading-relaxed">{data.about[1]}</p>
-
-              <div className="mt-6 flex flex-wrap gap-2">
-                <Pill>Cybersecurity</Pill>        
-                <Pill>Python</Pill>
-                <Pill>C++</Pill>
-                <Pill>AI</Pill>
-                <Pill>React</Pill>
-              </div>
-            </GlassCard>
-
-            <div className="grid gap-6">
-              <GlassCard className="p-6">
-                <p className="text-xs uppercase tracking-widest text-slate-400">Snapshot</p>
-                <div className="mt-4 grid grid-cols-3 gap-3">
-                  {[
-                    { label: "Projects", value: "10+" },
-                    { label: "Tools", value: "Splunk/Wireshark" },
-                    { label: "Focus", value: "Security Analysis" },
-                  ].map((s) => (
-                    <div key={s.label} className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                      <p className="text-sm font-bold">{s.value}</p>
-                      <p className="text-[11px] text-slate-300/80 mt-1">{s.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </GlassCard>
-
-              <GlassCard className="p-6">
-                <p className="text-sm font-bold">Open to</p>
-                <p className="text-sm text-slate-300/80 mt-2">
-                  Internships, IT roles, Cybersecurity Analyst Roles, software engineering projects. Always happy to collaborate and connect with others who are passionate about technology.
-                </p>
-              </GlassCard>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* SKILLS */}
-      <section id="skills" className="py-20 border-t border-white/10">
-        <Container>
-          <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold">Technical Skills</h2>
-            <p className="mt-3 text-slate-300/80 max-w-2xl mx-auto">
-              Tools and technologies I use to build real projects.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-8 lg:grid-cols-2">
-            <GlassCard className="p-6 sm:p-8">
-              <p className="text-xs uppercase tracking-widest text-slate-400">Proficiency Level</p>
-              <div className="mt-6">
-                {data.skillBars.map((skill) => (
-                  <ProgressBar key={skill.label} label={skill.label} value={skill.value} />
-                ))}
-              </div>
-            </GlassCard>
-
-            <GlassCard className="p-6 sm:p-8">
-  <p className="text-xs uppercase tracking-widest text-slate-400">
-    Technologies & Tools
-  </p>
-
-  <div className="mt-6 grid grid-cols-3 gap-3 sm:grid-cols-4">
-    {data.tools.map((tool) => (
-      <div
-        key={tool.name}
-        className="flex flex-col items-center justify-center text-center rounded-xl border border-white/10 bg-white/5 p-4 transition-transform hover:-translate-y-1"
-      >
-        <div className="flex items-center justify-center h-12 w-12 mb-2">
-          <img
-            src={tool.img}
-            alt={tool.name}
-            className="max-h-full max-w-full object-contain"
-          />
-        </div>
-
-        <span className="text-[10px] font-medium uppercase text-slate-500">
-          {tool.name}
-        </span>
-      </div>
-    ))}
-  </div>
-</GlassCard>
-
-          </div>
-        </Container>
-      </section>
-
-      {/* PROJECTS */}
-      <section id="projects" className="py-20">
-        <Container>
-          <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold">Featured Projects</h2>
-            <p className="mt-3 text-slate-300/80 max-w-2xl mx-auto">
-              A few projects I’m proud of — more on my GitHub.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6 lg:grid-cols-2">
-            {data.projects.map((p) => (
-              <GlassCard key={p.title} className="overflow-hidden">
-                <div className="h-44 sm:h-56 w-full overflow-hidden">
-                  <img
-                    src={p.image}
-                    alt={p.title}
-                    className="h-48 w-full object-cover rounded-lg"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-lg font-bold">{p.title}</p>
-                      <p className="mt-2 text-sm text-slate-300/90 leading-relaxed">{p.desc}</p>
-                    </div>
-                    <a
-                      href={p.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="shrink-0 rounded-xl border border-white/10 bg-white/5 p-2 hover:bg-white/10 transition"
-                      aria-label="Open project link"
-                      title="Open link"
-                    >
-                      <ExternalLink size={16} />
-                    </a>
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {p.tags.map((t) => (
-                      <Pill key={t} className="text-slate-200/90">
-                        {t}
-                      </Pill>
-                    ))}
-                  </div>
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* CERTIFICATIONS */}
-      <section id="certifications" className="py-20 border-t border-white/10">
-        <Container>
-          <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold">Certifications</h2>
-            <p className="mt-3 text-slate-300/80 max-w-2xl mx-auto">
-              Training and hands-on work that strengthened my security + development skills.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6">
-            {data.certs.map((cert) => (
-              <GlassCard key={cert.title} className="p-6 sm:p-8">
-                <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-                  <div className="md:w-1/3">
-                    <div className="flex items-center gap-3">
-                      <div className={cn("rounded-xl border border-white/10 bg-gradient-to-br p-2", cert.accent)}>
-                        {cert.icon}
-                      </div>
-                      <div>
-                        <p className="text-lg font-bold">{cert.title}</p>
-                        <p className="text-sm text-slate-300/80">{cert.org}</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 flex items-center gap-3">
-                      <span className="text-xs rounded-full border border-white/10 bg-white/5 px-3 py-1">
-                        ✅ {cert.status}
-                      </span>
-                      <span className="text-xs text-slate-300/70">{cert.date}</span>
-                    </div>
-
-                    <a
-                      href={cert.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-6 inline-flex items-center gap-2 text-xs font-bold text-indigo-400 hover:underline"
->
-                      View Certificate <ExternalLink size={14} />
-                    </a>
-                  </div>
-
-                  <div className="md:w-2/3">
-                    <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-slate-400">
-                      <Award size={14} /> Key Learning Areas & Projects
-                    </div>
-                    <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                      {cert.areas.map((a) => (
-                        <li key={a} className="text-sm text-slate-200/90 flex gap-2">
-                          <span className="text-fuchsia-300">•</span>
-                          <span className="text-slate-300/90">{a}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </GlassCard>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* CONTACT */}
-      <section id="contact" className="py-20">
-        <Container>
-          <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl font-extrabold">
-              Get In <span className="text-indigo-300">Touch</span>
-            </h2>
-            <p className="mt-3 text-slate-300/80 max-w-2xl mx-auto">
-              Want to collaborate or chat? Send a message.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-8 md:grid-cols-2 md:items-start">
-            <GlassCard className="p-6 sm:p-8">
-              <p className="text-lg font-bold">Let’s Talk</p>
-              <p className="mt-2 text-sm text-slate-300/80">
-                I’m always interested in hearing about new opportunities and projects.
-              </p>
-
-              <div className="mt-6 grid gap-4">
-                <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="rounded-xl bg-white/5 border border-white/10 p-2">
-                    <Mail size={18} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-300/70">Email</p>
-                    <p className="text-sm">{data.email}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="rounded-xl bg-white/5 border border-white/10 p-2">
-                    <MapPin size={18} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-300/70">Location</p>
-                    <p className="text-sm">{data.location}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
-                  <div className="rounded-xl bg-white/5 border border-white/10 p-2">
-                    <Phone size={18} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-300/70">Phone</p>
-                    <p className="text-sm">{data.phone}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex gap-3">
-                {data.links.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 p-2 hover:bg-white/10 transition"
-                    aria-label={link.label}
-                  >
-                    {link.icon}
-                  </a>
-                ))}
-              </div>
-            </GlassCard>
-
-            <GlassCard className="p-6 sm:p-8">
-  <p className="text-lg font-bold">Message</p>
-  <p className="mt-2 text-sm text-slate-300/80">
-    Send me a message and I’ll get back to you.
-  </p>
-
-  {/* Status message */}
-  {status.msg && (
-    <div
-      className={`mt-4 rounded-xl border px-4 py-3 text-sm ${
-        status.type === "success"
-          ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
-          : "border-red-400/30 bg-red-400/10 text-red-200"
-      }`}
-    >
-      {status.msg}
-    </div>
-  )}
-
-  <form onSubmit={onSubmit} className="mt-6 grid gap-4">
-    <div className="grid gap-4 sm:grid-cols-2">
-      <input
-        name="name"
-        value={form.name}
-        onChange={onChange}
-        placeholder="Full Name"
-        className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
-      />
-      <input
-        name="email"
-        value={form.email}
-        onChange={onChange}
-        placeholder="Email Address"
-        className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
-      />
-    </div>
-
-    <input
-      name="subject"
-      value={form.subject}
-      onChange={onChange}
-      placeholder="Subject"
-      className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
-    />
-
-    <textarea
-      name="message"
-      value={form.message}
-      onChange={onChange}
-      placeholder="Message"
-      rows={5}
-      className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-300/50"
-    />
-
-    <button
-      type="submit"
-      disabled={loading}
-      className="w-full rounded-2xl bg-gradient-to-r from-blue-900 via-blue-450 to-cyan-500 py-3 text-sm font-semibold text-white hover:opacity-95 disabled:opacity-60 disabled:cursor-not-allowed"
-    >
-      {loading ? "Sending..." : "Send Message"}
-    </button>
-  </form>
-</GlassCard>
-
-          </div>
-        </Container>
-      </section>
-
-      <footer className="border-t border-white/10 py-10">
-        <Container>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-xs text-slate-300/70">
-              © {new Date().getFullYear()} {data.name}. Made with ❤️ in NY
-            </p>
-            <div className="text-xs text-slate-300/60">
-              Built with React + Tailwind
-            </div>
-          </div>
-        </Container>
-      </footer>
-    </div>
-  );
+  return <div className="min-h-screen overflow-x-hidden text-slate-100">
+    <a href="#main-content" className="sr-only z-[60] rounded bg-white px-4 py-2 text-slate-950 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to content</a>
+    <div className="fixed inset-0 -z-10" aria-hidden="true"><div className="absolute inset-0 bg-[#070A14]" /><div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-blue-950/20 to-blue-300/10" /><div className="absolute -top-40 left-1/2 h-[520px] w-[980px] -translate-x-1/2 rounded-full bg-fuchsia-500/10 blur-[120px]" /><div className="absolute inset-0 opacity-[.08] [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:26px_26px]" /></div>
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#070A14]/90 backdrop-blur-xl"><Container className="py-4"><div className="flex items-center justify-between"><button onClick={() => goTo("home")} className="rounded text-xl font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">Portfolio</button><nav aria-label="Primary navigation" className="hidden items-center gap-6 text-sm text-slate-300 md:flex">{sections.map(([id, label]) => <button key={id} onClick={() => goTo(id)} className="rounded hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">{label}</button>)}<button onClick={() => goTo("contact")} className="rounded-full border border-white/10 bg-white/10 px-4 py-2 font-semibold text-white">Let's Talk <ArrowRight className="ml-1 inline" size={14} /></button></nav><button className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 md:hidden" onClick={() => setMobileOpen((value) => !value)} aria-expanded={mobileOpen} aria-controls="mobile-nav" aria-label={mobileOpen ? "Close navigation" : "Open navigation"}>{mobileOpen ? <X /> : <Menu />}</button></div>{mobileOpen && <nav id="mobile-nav" aria-label="Mobile navigation" className="mt-4 grid gap-1 rounded-2xl border border-white/10 bg-slate-950 p-3 md:hidden">{sections.map(([id, label]) => <button key={id} onClick={() => goTo(id)} className="flex min-h-11 items-center justify-between rounded-xl px-3 text-left text-sm hover:bg-white/5">{label}<ChevronDown size={14} className="-rotate-90" /></button>)}</nav>}</Container></header>
+    <main id="main-content">
+      <section id="home" className="flex min-h-[88vh] scroll-mt-24 items-center py-16"><Container><div className="grid gap-10 lg:grid-cols-2 lg:items-center"><div className="text-center lg:text-left"><p className="text-sm font-semibold text-slate-300">Hi, I'm</p><h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl"><span className="bg-gradient-to-r from-indigo-300 via-fuchsia-300 to-cyan-200 bg-clip-text text-transparent">{data.name}</span></h1><p className="mt-4 font-medium">{data.role}</p><p className="mx-auto mt-5 max-w-xl leading-relaxed text-slate-300 lg:mx-0">{data.tagline}</p><p className="mt-3 text-sm text-slate-400">Interested in Technical Risk Management, GRC, security engineering, and cybersecurity internships.</p><div className="mt-7 flex flex-wrap justify-center gap-3 lg:justify-start"><button onClick={() => goTo("projects")} className="rounded-full bg-gradient-to-r from-indigo-700 via-violet-600 to-cyan-600 px-6 py-3 text-sm font-semibold">Explore My Work <ArrowRight className="ml-1 inline" size={16} /></button><button onClick={() => goTo("contact")} className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold">Contact Me</button></div><div className="mt-7 flex justify-center gap-4 lg:justify-start">{data.links.map((link) => <a key={link.label} href={link.href} {...(link.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5" aria-label={link.label}>{link.icon}</a>)}</div></div><Card className="p-6 sm:p-8"><h2 className="text-sm font-semibold">Technical foundation</h2><p className="mt-1 text-xs text-slate-400">Capabilities grounded in coursework and projects</p><div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-1">{data.capabilities.map(([title, desc, icon]) => <div key={title} className="rounded-2xl border border-white/10 bg-white/5 p-4"><div className="flex items-start gap-3"><span className="rounded-xl border border-white/10 p-2 text-cyan-200">{icon}</span><div><h3 className="text-sm font-bold">{title}</h3><p className="mt-1 text-xs text-slate-300">{desc}</p></div></div></div>)}</div></Card></div></Container></section>
+      <section id="about" className="scroll-mt-24 border-t border-white/10 py-20"><Container><Heading title="About Me">Engineering experience supporting a growing cybersecurity and technology-risk focus.</Heading><div className="mt-10 grid gap-6 lg:grid-cols-2"><Card className="p-6 sm:p-8"><p className="leading-relaxed">{data.about[0]}</p><p className="mt-4 leading-relaxed text-slate-300">{data.about[1]}</p></Card><div className="grid gap-6"><Card className="p-6"><p className="text-xs uppercase tracking-widest text-slate-400">Education</p><p className="mt-4 font-bold">B.A. Computer Science · Minor in Mathematics</p><p className="mt-1 text-sm text-slate-300">Hunter College, City University of New York</p><p className="mt-1 text-sm text-slate-400">August 2024 – May 2028 (expected)</p></Card><Card className="p-6"><p className="font-bold">Career interests</p><p className="mt-2 text-sm leading-relaxed text-slate-300">Technical Risk Management, Governance, Risk & Compliance, security engineering, threat intelligence, application security, and technology internships.</p></Card></div></div></Container></section>
+      <section id="experience" className="scroll-mt-24 border-t border-white/10 py-20"><Container><Heading title="Experience">Software engineering, AI-system evaluation, and technical support experience.</Heading><div className="mt-12 grid gap-6">{data.experience.map((item) => <Card key={item.title} className="p-6 sm:p-8"><div className="flex flex-col gap-2 sm:flex-row sm:justify-between"><div><h3 className="text-lg font-bold">{item.title}</h3><p className="text-sm font-semibold text-slate-300">{item.company}</p></div><div className="shrink-0 sm:text-right"><p className="text-xs text-slate-400">{item.period}</p><p className="mt-1 text-xs text-slate-400">{item.type}</p></div></div><ul className="mt-4 grid gap-2">{item.bullets.map((bullet) => <li key={bullet} className="flex gap-2 text-sm text-slate-300"><span aria-hidden="true" className="text-fuchsia-300">•</span>{bullet}</li>)}</ul><div className="mt-4 flex flex-wrap gap-2">{item.tags.map((tag) => <Pill key={tag}>{tag}</Pill>)}</div></Card>)}</div></Container></section>
+      <section id="skills" className="scroll-mt-24 border-t border-white/10 py-20"><Container><Heading title="Technical Skills">Categorized capabilities supported by experience, coursework, and hands-on labs.</Heading><div className="mt-12 grid gap-6 md:grid-cols-2">{data.skills.map(([category, items]) => <Card key={category} className="p-6"><h3 className="font-bold text-cyan-100">{category}</h3><div className="mt-4 flex flex-wrap gap-2">{items.map((item) => <Pill key={item}>{item}</Pill>)}</div></Card>)}</div></Container></section>
+      <section id="projects" className="scroll-mt-24 border-t border-white/10 py-20"><Container><Heading title="Selected Work">Technical projects and academic work aligned with engineering, cybersecurity, and risk.</Heading><div className="mt-12 grid gap-6 md:grid-cols-2">{data.projects.map((project) => <Card key={project.title} className={cn("overflow-hidden", project.compact && "md:col-span-2")}>{project.image && <div className="aspect-[16/9] overflow-hidden border-b border-white/10"><img src={project.image} alt={`Preview of ${project.title}`} loading="lazy" width="1200" height="675" className="h-full w-full object-cover" /></div>}<div className="p-6"><div className="flex items-start justify-between gap-3"><div><h3 className="text-lg font-bold">{project.title}</h3>{project.context && <p className="mt-1 text-xs font-medium text-cyan-200">{project.context}</p>}<p className="mt-2 text-sm leading-relaxed text-slate-300">{project.desc}</p></div>{project.href && <a href={project.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5" aria-label={`Open ${project.title} project`}><ExternalLink size={16} /></a>}</div><div className="mt-4 flex flex-wrap gap-2">{project.tags.map((tag) => <Pill key={tag}>{tag}</Pill>)}</div></div></Card>)}</div></Container></section>
+      <section id="certifications" className="scroll-mt-24 border-t border-white/10 py-20"><Container><Heading title="Certifications & Training">Cybersecurity programs and recent industry training, presented by credential type.</Heading><div className="mt-12 grid gap-6">{data.training.map((item) => <Card key={item.title} className="p-6 sm:p-8"><div className="flex flex-col gap-6 md:flex-row"><div className="md:w-2/5"><div className="flex items-start gap-3"><span className="mt-1 rounded-xl border border-white/10 p-2 text-cyan-200">{item.icon}</span><div><h3 className="font-bold leading-snug">{item.title}</h3><p className="mt-1 text-sm text-slate-300">{item.org}</p></div></div><div className="mt-4 flex flex-wrap gap-3"><span className="rounded-full border border-white/10 px-3 py-1 text-xs">{item.status}</span><span className="text-xs text-slate-400">{item.date}</span></div>{item.url && <a href={item.url} target="_blank" rel="noopener noreferrer" className="mt-5 inline-flex items-center gap-2 text-xs font-bold text-cyan-300">View certificate <ExternalLink size={14} /></a>}</div><ul className="grid gap-2 md:w-3/5">{item.areas.map((area) => <li key={area} className="flex gap-2 text-sm text-slate-300"><span aria-hidden="true" className="text-fuchsia-300">•</span>{area}</li>)}</ul></div></Card>)}</div></Container></section>
+      <section id="contact" className="scroll-mt-24 border-t border-white/10 py-20"><Container><Heading title="Get In Touch">Open to cybersecurity, technology-risk, security engineering, and software-focused internship opportunities.</Heading><div className="mt-12 grid gap-8 md:grid-cols-2 md:items-start"><Card className="p-6 sm:p-8"><h3 className="text-lg font-bold">Contact</h3><p className="mt-2 text-sm text-slate-300">The best way to reach me is by email or LinkedIn.</p><div className="mt-6 grid gap-4"><a href={`mailto:${data.email}`} className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><Mail size={18} className="shrink-0" /><span className="min-w-0 break-all text-sm">{data.email}</span></a><div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><MapPin size={18} /><span className="text-sm">{data.location}</span></div></div></Card><Card className="p-6 sm:p-8"><h3 className="text-lg font-bold">Message</h3><p className="mt-2 text-sm text-slate-300">Send a message or use the email address provided.</p>{status.msg && <div role="status" aria-live="polite" className={cn("mt-4 rounded-xl border px-4 py-3 text-sm", status.type === "success" ? "border-emerald-400/30 text-emerald-200" : "border-red-400/30 text-red-200")}>{status.msg}</div>}<form onSubmit={onSubmit} className="mt-6 grid gap-4"><div className="absolute -left-[9999px]" aria-hidden="true"><label htmlFor="website">Website</label><input id="website" name="website" value={form.website} onChange={onChange} tabIndex="-1" autoComplete="off" /></div><div className="grid gap-4 sm:grid-cols-2">{[["name", "Name", "text", 100], ["email", "Email", "email", 254]].map(([name, label, type, max]) => <label key={name} className="grid gap-2 text-sm" htmlFor={name}>{label}<input id={name} type={type} name={name} value={form[name]} onChange={onChange} required maxLength={max} autoComplete={name} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label>)}</div><label className="grid gap-2 text-sm" htmlFor="subject">Subject<input id="subject" name="subject" value={form.subject} onChange={onChange} required maxLength="150" className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label><label className="grid gap-2 text-sm" htmlFor="message">Message<textarea id="message" name="message" value={form.message} onChange={onChange} required maxLength="3000" rows="5" className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label><button type="submit" disabled={loading} className="min-h-11 rounded-2xl bg-gradient-to-r from-indigo-700 via-violet-600 to-cyan-600 py-3 text-sm font-semibold disabled:opacity-60">{loading ? "Sending…" : "Send Message"}</button></form></Card></div></Container></section>
+    </main><footer className="border-t border-white/10 py-10"><Container><div className="flex flex-col gap-3 text-xs text-slate-400 sm:flex-row sm:justify-between"><p>© {new Date().getFullYear()} {data.name}. New York, NY</p><p>Built with React and Tailwind CSS</p></div></Container></footer>
+  </div>;
 }
