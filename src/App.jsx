@@ -73,7 +73,14 @@ export default function App() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "", website: "" });
   const [status, setStatus] = useState({ type: "", msg: "" });
   const [loading, setLoading] = useState(false);
-  const goTo = (id) => { setMobileOpen(false); document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" }); };
+  const goTo = (id) => {
+    setMobileOpen(false);
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.getElementById(id)?.scrollIntoView({
+      behavior: prefersReducedMotion ? "auto" : "smooth",
+      block: "start",
+    });
+  };
   const onChange = ({ target }) => setForm((current) => ({ ...current, [target.name]: target.value }));
   async function onSubmit(event) {
     event.preventDefault(); setStatus({ type: "", msg: "" });
@@ -91,7 +98,7 @@ export default function App() {
     finally { setLoading(false); }
   }
 
-  return <div className="min-h-screen overflow-x-hidden text-slate-100">
+  return <div className="min-h-screen overflow-x-clip text-slate-100">
     <a href="#main-content" className="sr-only z-[60] rounded bg-white px-4 py-2 text-slate-950 focus:not-sr-only focus:fixed focus:left-4 focus:top-4">Skip to content</a>
     <div className="fixed inset-0 -z-10" aria-hidden="true"><div className="absolute inset-0 bg-[#070A14]" /><div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-blue-950/20 to-blue-300/10" /><div className="absolute -top-40 left-1/2 h-[520px] w-[980px] -translate-x-1/2 rounded-full bg-fuchsia-500/10 blur-[120px]" /><div className="absolute inset-0 opacity-[.08] [background-image:radial-gradient(white_1px,transparent_1px)] [background-size:26px_26px]" /></div>
     <header className="sticky top-0 z-50 border-b border-white/10 bg-[#070A14]/90 backdrop-blur-xl"><Container className="py-4"><div className="flex items-center justify-between"><button onClick={() => goTo("home")} className="rounded text-xl font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">Portfolio</button><nav aria-label="Primary navigation" className="hidden items-center gap-6 text-sm text-slate-300 md:flex">{sections.map(([id, label]) => <button key={id} onClick={() => goTo(id)} className="rounded hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-cyan-300">{label}</button>)}<button onClick={() => goTo("contact")} className="rounded-full border border-white/10 bg-white/10 px-4 py-2 font-semibold text-white">Let's Talk <ArrowRight className="ml-1 inline" size={14} /></button></nav><button className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 md:hidden" onClick={() => setMobileOpen((value) => !value)} aria-expanded={mobileOpen} aria-controls="mobile-nav" aria-label={mobileOpen ? "Close navigation" : "Open navigation"}>{mobileOpen ? <X /> : <Menu />}</button></div>{mobileOpen && <nav id="mobile-nav" aria-label="Mobile navigation" className="mt-4 grid gap-1 rounded-2xl border border-white/10 bg-slate-950 p-3 md:hidden">{sections.map(([id, label]) => <button key={id} onClick={() => goTo(id)} className="flex min-h-11 items-center justify-between rounded-xl px-3 text-left text-sm hover:bg-white/5">{label}<ChevronDown size={14} className="-rotate-90" /></button>)}</nav>}</Container></header>
