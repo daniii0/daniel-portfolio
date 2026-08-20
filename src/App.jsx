@@ -55,6 +55,12 @@ const data = {
 };
 
 const cn = (...classes) => classes.filter(Boolean).join(" ");
+const emailJsConfig = {
+  serviceId: import.meta.env.VITE_EMAILJS_SERVICE_ID,
+  templateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+  publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY,
+};
+const isContactFormConfigured = Object.values(emailJsConfig).every(Boolean);
 function Container({ children, className = "" }) { return <div className={cn("mx-auto min-w-0 w-full max-w-6xl px-5 sm:px-6", className)}>{children}</div>; }
 function Card({ children, className = "" }) { return <div className={cn("min-w-0 max-w-full rounded-2xl border border-white/10 bg-white/[0.06] shadow-[0_10px_30px_rgba(0,0,0,.25)] backdrop-blur-xl", className)}>{children}</div>; }
 function Pill({ children }) { return <span className="inline-flex rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 text-xs font-medium text-slate-200">{children}</span>; }
@@ -66,12 +72,22 @@ function CredentialActions({ item }) {
     {item.linkedInUrl && <a href={item.linkedInUrl} target="_blank" rel="noopener noreferrer" className={actionClass} aria-label={item.linkedInLabel ?? `View ${item.title} LinkedIn post`}>LinkedIn Post <Linkedin size={14} aria-hidden="true" /></a>}
   </div>;
 }
+function ContactStatus({ status }) {
+  if (!status.type) return null;
+  const isSuccess = status.type === "success";
+  return <div role="status" aria-live="polite" className={cn("mt-4 rounded-xl border px-4 py-3 text-sm", isSuccess ? "border-emerald-400/30 text-emerald-200" : "border-red-400/30 text-red-200")}>
+    {status.type === "unavailable" && <>The form is unavailable. Please email <a href={`mailto:${data.email}`} className="break-all underline decoration-current/60 underline-offset-2 hover:decoration-current focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300">{data.email}</a></>}
+    {status.type === "error" && <>Your message couldn&apos;t be sent. Please try again or email <a href={`mailto:${data.email}`} className="break-all underline decoration-current/60 underline-offset-2 hover:decoration-current focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300">{data.email}</a></>}
+    {status.type === "validation" && status.msg}
+    {isSuccess && status.msg}
+  </div>;
+}
 
 export default function App() {
   const sections = useMemo(() => [["home", "Home"], ["about", "About"], ["experience", "Experience"], ["skills", "Skills"], ["projects", "Projects"], ["certifications", "Training"], ["contact", "Contact"]], []);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "", website: "" });
-  const [status, setStatus] = useState({ type: "", msg: "" });
+  const [status, setStatus] = useState(isContactFormConfigured ? { type: "", msg: "" } : { type: "unavailable", msg: "" });
   const [loading, setLoading] = useState(false);
   const goTo = (id) => {
     setMobileOpen(false);
@@ -86,15 +102,14 @@ export default function App() {
     event.preventDefault(); setStatus({ type: "", msg: "" });
     const clean = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, value.trim()]));
     if (clean.website) return;
-    if (!clean.name || !clean.email || !clean.subject || !clean.message) return setStatus({ type: "error", msg: "Please complete every field." });
-    if (clean.name.length > 100 || clean.email.length > 254 || clean.subject.length > 150 || clean.message.length > 3000) return setStatus({ type: "error", msg: "Please shorten your message and try again." });
-    const config = [import.meta.env.VITE_EMAILJS_SERVICE_ID, import.meta.env.VITE_EMAILJS_TEMPLATE_ID, import.meta.env.VITE_EMAILJS_PUBLIC_KEY];
-    if (config.some((value) => !value)) return setStatus({ type: "error", msg: `The form is unavailable. Please email ${data.email}.` });
+    if (!clean.name || !clean.email || !clean.subject || !clean.message) return setStatus({ type: "validation", msg: "Please complete every field." });
+    if (clean.name.length > 100 || clean.email.length > 254 || clean.subject.length > 150 || clean.message.length > 3000) return setStatus({ type: "validation", msg: "Please shorten your message and try again." });
+    if (!isContactFormConfigured) return setStatus({ type: "unavailable", msg: "" });
     setLoading(true);
     try {
-      await emailjs.send(config[0], config[1], { from_name: clean.name, from_email: clean.email, subject: clean.subject, message: clean.message }, config[2]);
+      await emailjs.send(emailJsConfig.serviceId, emailJsConfig.templateId, { from_name: clean.name, from_email: clean.email, subject: clean.subject, message: clean.message }, emailJsConfig.publicKey);
       setStatus({ type: "success", msg: "Message sent successfully." }); setForm({ name: "", email: "", subject: "", message: "", website: "" });
-    } catch { setStatus({ type: "error", msg: `The message could not be sent. Please email ${data.email}.` }); }
+    } catch { setStatus({ type: "error", msg: "" }); }
     finally { setLoading(false); }
   }
 
@@ -136,7 +151,7 @@ export default function App() {
           </div>
         </Container>
       </section>
-      <section id="contact" className="scroll-mt-24 border-t border-white/10 py-20"><Container><Heading title="Get In Touch">Open to cybersecurity, technology-risk, security engineering, and software-focused internship opportunities.</Heading><div className="mt-12 grid gap-8 md:grid-cols-2 md:items-start"><Card className="p-6 sm:p-8"><h3 className="text-lg font-bold">Contact</h3><p className="mt-2 text-sm text-slate-300">The best way to reach me is by email or LinkedIn.</p><div className="mt-6 grid gap-4"><a href={`mailto:${data.email}`} className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><Mail size={18} className="shrink-0" /><span className="min-w-0 break-all text-sm">{data.email}</span></a><div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><MapPin size={18} /><span className="text-sm">{data.location}</span></div></div></Card><Card className="p-6 sm:p-8"><h3 className="text-lg font-bold">Message</h3><p className="mt-2 text-sm text-slate-300">Send a message or use the email address provided.</p>{status.msg && <div role="status" aria-live="polite" className={cn("mt-4 rounded-xl border px-4 py-3 text-sm", status.type === "success" ? "border-emerald-400/30 text-emerald-200" : "border-red-400/30 text-red-200")}>{status.msg}</div>}<form onSubmit={onSubmit} className="mt-6 grid gap-4"><div className="absolute -left-[9999px]" aria-hidden="true"><label htmlFor="website">Website</label><input id="website" name="website" value={form.website} onChange={onChange} tabIndex="-1" autoComplete="off" /></div><div className="grid gap-4 sm:grid-cols-2">{[["name", "Name", "text", 100], ["email", "Email", "email", 254]].map(([name, label, type, max]) => <label key={name} className="grid gap-2 text-sm" htmlFor={name}>{label}<input id={name} type={type} name={name} value={form[name]} onChange={onChange} required maxLength={max} autoComplete={name} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label>)}</div><label className="grid gap-2 text-sm" htmlFor="subject">Subject<input id="subject" name="subject" value={form.subject} onChange={onChange} required maxLength="150" className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label><label className="grid gap-2 text-sm" htmlFor="message">Message<textarea id="message" name="message" value={form.message} onChange={onChange} required maxLength="3000" rows="5" className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label><button type="submit" disabled={loading} className="min-h-11 rounded-2xl bg-gradient-to-r from-indigo-700 via-violet-600 to-cyan-600 py-3 text-sm font-semibold disabled:opacity-60">{loading ? "Sending…" : "Send Message"}</button></form></Card></div></Container></section>
+      <section id="contact" className="scroll-mt-24 border-t border-white/10 py-20"><Container><Heading title="Get In Touch">Open to cybersecurity, technology-risk, security engineering, and software-focused internship opportunities.</Heading><div className="mt-12 grid gap-8 md:grid-cols-2 md:items-start"><Card className="p-6 sm:p-8"><h3 className="text-lg font-bold">Contact</h3><p className="mt-2 text-sm text-slate-300">The best way to reach me is by email or LinkedIn.</p><div className="mt-6 grid gap-4"><a href={`mailto:${data.email}`} className="flex min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><Mail size={18} className="shrink-0" /><span className="min-w-0 break-all text-sm">{data.email}</span></a><div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-4"><MapPin size={18} /><span className="text-sm">{data.location}</span></div></div></Card><Card className="p-6 sm:p-8"><h3 className="text-lg font-bold">Message</h3><p className="mt-2 text-sm text-slate-300">Send a message or use the email address provided.</p><ContactStatus status={status} />{isContactFormConfigured && <form onSubmit={onSubmit} className="mt-6 grid gap-4"><div className="absolute -left-[9999px]" aria-hidden="true"><label htmlFor="website">Website</label><input id="website" name="website" value={form.website} onChange={onChange} tabIndex="-1" autoComplete="off" /></div><div className="grid gap-4 sm:grid-cols-2">{[["name", "Name", "text", 100], ["email", "Email", "email", 254]].map(([name, label, type, max]) => <label key={name} className="grid gap-2 text-sm" htmlFor={name}>{label}<input id={name} type={type} name={name} value={form[name]} onChange={onChange} required maxLength={max} autoComplete={name} className="min-w-0 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label>)}</div><label className="grid gap-2 text-sm" htmlFor="subject">Subject<input id="subject" name="subject" value={form.subject} onChange={onChange} required maxLength="150" className="min-w-0 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label><label className="grid gap-2 text-sm" htmlFor="message">Message<textarea id="message" name="message" value={form.message} onChange={onChange} required maxLength="3000" rows="5" className="min-w-0 resize-y rounded-2xl border border-white/10 bg-white/5 px-4 py-3 outline-none focus:border-cyan-300" /></label><button type="submit" disabled={loading} className="min-h-11 rounded-2xl bg-gradient-to-r from-indigo-700 via-violet-600 to-cyan-600 py-3 text-sm font-semibold disabled:opacity-60">{loading ? "Sending…" : "Send Message"}</button></form>}</Card></div></Container></section>
     </main><footer className="border-t border-white/10 py-10"><Container><div className="flex flex-col gap-3 text-xs text-slate-400 sm:flex-row sm:justify-between"><p>© {new Date().getFullYear()} {data.name}. New York, NY</p><p>Built with React and Tailwind CSS</p></div></Container></footer>
   </div>;
 }

@@ -20,6 +20,8 @@ The EmailJS public key is a browser-side identifier, not a private secret. Confi
 
 Pushes to `main` run `.github/workflows/deploy-pages.yml`. The workflow installs locked dependencies, runs lint and the dependency audit, builds the Vite application, uploads `dist`, and deploys the artifact through GitHub Pages.
 
+The production build reads `VITE_EMAILJS_SERVICE_ID`, `VITE_EMAILJS_TEMPLATE_ID`, and `VITE_EMAILJS_PUBLIC_KEY` from GitHub Actions repository variables. Configure them under **Settings → Secrets and variables → Actions → Variables**. These are public browser-side EmailJS identifiers; do not store a private EmailJS key in a `VITE_` variable.
+
 The Vite base path is `/daniel-portfolio/`, matching this repository's GitHub Pages project-site URL. The legacy `gh-pages` branch is no longer used by the deployment workflow.
 
 In **Settings → Pages → Build and deployment**, set **Source** to **GitHub Actions**. Also confirm **Enforce HTTPS** is enabled.
